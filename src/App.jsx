@@ -210,7 +210,7 @@ export default function App() {
           </div>
           <div>
             <h1 className="app-title">TaskFlow</h1>
-            <p class="app-subtitle">Elevate your daily rhythm</p>
+            <p className="app-subtitle">Elevate your daily rhythm</p>
           </div>
         </div>
         <div className="header-date" aria-label="Current Date">
@@ -230,6 +230,8 @@ export default function App() {
           total={totalCount} 
           pending={pendingCount} 
           completed={completedCount} 
+          currentFilter={currentFilter}
+          setCurrentFilter={setCurrentFilter}
         />
 
         {/* TASK MANAGEMENT CARD */}

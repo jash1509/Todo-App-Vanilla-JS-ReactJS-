@@ -1,13 +1,26 @@
 import React from 'react';
 
-export default function Dashboard({ total, pending, completed }) {
+export default function Dashboard({ total, pending, completed, currentFilter, setCurrentFilter }) {
   const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
   const CIRCUMFERENCE = 2 * Math.PI * 24; // r = 24
   const strokeDashoffset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
 
   return (
     <section className="dashboard-stats" aria-label="Task Analytics Dashboard">
-      <div className="stat-card" id="stat-total-card">
+      <div 
+        className={`stat-card interactive ${currentFilter === 'all' ? 'active' : ''}`} 
+        id="stat-total-card"
+        onClick={() => setCurrentFilter && setCurrentFilter('all')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setCurrentFilter && setCurrentFilter('all');
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`Total tasks: ${total}. Click to filter all tasks.`}
+      >
         <div className="stat-details">
           <span className="stat-label">Total Tasks</span>
           <span className="stat-value">{total}</span>
@@ -19,7 +32,20 @@ export default function Dashboard({ total, pending, completed }) {
         </div>
       </div>
 
-      <div className="stat-card" id="stat-pending-card">
+      <div 
+        className={`stat-card interactive ${currentFilter === 'pending' ? 'active' : ''}`} 
+        id="stat-pending-card"
+        onClick={() => setCurrentFilter && setCurrentFilter('pending')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setCurrentFilter && setCurrentFilter('pending');
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`Pending tasks: ${pending}. Click to filter pending tasks.`}
+      >
         <div className="stat-details">
           <span className="stat-label">Pending</span>
           <span className="stat-value text-warning">{pending}</span>
@@ -31,7 +57,20 @@ export default function Dashboard({ total, pending, completed }) {
         </div>
       </div>
 
-      <div className="stat-card" id="stat-completed-card">
+      <div 
+        className={`stat-card interactive ${currentFilter === 'completed' ? 'active' : ''}`} 
+        id="stat-completed-card"
+        onClick={() => setCurrentFilter && setCurrentFilter('completed')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setCurrentFilter && setCurrentFilter('completed');
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`Completed tasks: ${completed}. Click to filter completed tasks.`}
+      >
         <div className="stat-details">
           <span className="stat-label">Completed</span>
           <span className="stat-value text-success">{completed}</span>

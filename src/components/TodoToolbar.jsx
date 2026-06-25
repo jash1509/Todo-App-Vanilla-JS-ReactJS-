@@ -15,6 +15,44 @@ export default function TodoToolbar({
   const pendingTabRef = useRef(null);
   const completedTabRef = useRef(null);
 
+  // Custom Select Dropdown State & Refs
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const sortOptions = [
+    { value: 'newest', label: 'Newest First' },
+    { value: 'oldest', label: 'Oldest First' },
+    { value: 'alpha-asc', label: 'Alphabetical (A-Z)' },
+    { value: 'alpha-desc', label: 'Alphabetical (Z-A)' }
+  ];
+
+  const currentOption = sortOptions.find(opt => opt.value === currentSort) || sortOptions[0];
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      setIsOpen(true);
+    } else if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
+  const handleOptionSelect = (val) => {
+    setCurrentSort(val);
+    setIsOpen(false);
+  };
+
   // Function to compute sliding indicator styling parameters
   const updateSlider = () => {
     let activeTab = null;
@@ -71,25 +109,62 @@ export default function TodoToolbar({
         </div>
 
         {/* Sort Controls */}
-        <div className="sort-box">
-          <label htmlFor="task-sort-select" className="sr-only">Sort by</label>
-          <div className="select-wrapper">
-            <select 
-              id="task-sort-select" 
-              value={currentSort}
-              onChange={(e) => setCurrentSort(e.target.value)}
-              aria-label="Sort options"
+        <div className="sort-box" ref={dropdownRef}>
+          <span className="sr-only">Sort by</span>
+          <div className="custom-select-wrapper">
+            <button
+              type="button"
+              className={`custom-select-trigger ${isOpen ? 'active' : ''}`}
+              onClick={() => setIsOpen(!isOpen)}
+              onKeyDown={handleKeyDown}
+              aria-haspopup="listbox"
+              aria-expanded={isOpen}
+              aria-label={`Sort by: ${currentOption.label}`}
             >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="alpha-asc">Alphabetical (A-Z)</option>
-              <option value="alpha-desc">Alphabetical (Z-A)</option>
-            </select>
-            <span className="select-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-              </svg>
-            </span>
+              <span>{currentOption.label}</span>
+              <span className={`select-arrow ${isOpen ? 'open' : ''}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </span>
+            </button>
+            
+            {isOpen && (
+              <ul 
+                className="custom-select-options" 
+                role="listbox" 
+                aria-label="Sort options"
+              >
+                {sortOptions.map((opt) => {
+                  const isSelected = opt.value === currentSort;
+                  return (
+                    <li
+                      key={opt.value}
+                      className={`custom-select-option ${isSelected ? 'selected' : ''}`}
+                      role="option"
+                      aria-selected={isSelected}
+                      onClick={() => handleOptionSelect(opt.value)}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleOptionSelect(opt.value);
+                        }
+                      }}
+                    >
+                      <span className="option-label">{opt.label}</span>
+                      {isSelected && (
+                        <span className="option-check">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                          </svg>
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </div>
       </div>

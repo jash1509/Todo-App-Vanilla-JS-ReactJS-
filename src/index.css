@@ -288,7 +288,7 @@ body::after {
     gap: 1rem;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .dashboard-stats {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -303,6 +303,7 @@ body::after {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 0.5rem;
     box-shadow: var(--shadow-md);
     transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
     position: relative;
@@ -324,11 +325,15 @@ body::after {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 2.5px;
     background: var(--accent-bar, linear-gradient(90deg, var(--primary-color), var(--primary-light)));
     opacity: 0;
     transition: opacity var(--transition-normal);
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.stat-card.interactive {
+    cursor: pointer;
 }
 
 .stat-card:hover {
@@ -341,15 +346,45 @@ body::after {
     opacity: 1;
 }
 
+.stat-card.active {
+    border-color: var(--active-border-color, var(--border-glow));
+    box-shadow: var(--shadow-lg), 0 0 20px var(--active-glow-color, rgba(99, 102, 241, 0.12));
+    transform: translateY(-3px);
+}
+
+.stat-card.active::after {
+    opacity: 1;
+}
+
+.stat-card.active:hover {
+    transform: translateY(-6px) scale(1.01);
+}
+
 /* Per-card accent colors */
-.stat-card:nth-child(1) { --accent-bar: linear-gradient(90deg, #6366F1, #8B5CF6); }
-.stat-card:nth-child(2) { --accent-bar: linear-gradient(90deg, #F59E0B, #FBBF24); }
-.stat-card:nth-child(3) { --accent-bar: linear-gradient(90deg, #10B981, #34D399); }
-.stat-card:nth-child(4) { --accent-bar: linear-gradient(90deg, #06B6D4, #22D3EE); }
+.stat-card:nth-child(1) {
+    --accent-bar: linear-gradient(90deg, #6366F1, #8B5CF6);
+    --active-border-color: rgba(99, 102, 241, 0.45);
+    --active-glow-color: rgba(99, 102, 241, 0.15);
+}
+.stat-card:nth-child(2) {
+    --accent-bar: linear-gradient(90deg, #F59E0B, #FBBF24);
+    --active-border-color: rgba(245, 158, 11, 0.45);
+    --active-glow-color: rgba(245, 158, 11, 0.15);
+}
+.stat-card:nth-child(3) {
+    --accent-bar: linear-gradient(90deg, #10B981, #34D399);
+    --active-border-color: rgba(16, 185, 129, 0.45);
+    --active-glow-color: rgba(16, 185, 129, 0.15);
+}
+.stat-card:nth-child(4) {
+    --accent-bar: linear-gradient(90deg, #06B6D4, #22D3EE);
+}
 
 .stat-details {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    flex: 1;
 }
 
 .stat-label {
@@ -358,6 +393,7 @@ body::after {
     letter-spacing: 0.08em;
     font-weight: 700;
     color: var(--text-muted);
+    word-break: break-word;
 }
 
 .stat-value {
@@ -424,6 +460,7 @@ body::after {
 .progress-ring__circle {
     transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: 50% 50%;
+    stroke-linecap: round;
 }
 
 /* ==========================================================================
@@ -724,22 +761,21 @@ body::after {
     height: 15px;
 }
 
-/* Sort Select */
+/* Sort Select - Premium Custom Dropdown */
 .sort-box {
-    min-width: 158px;
+    min-width: 170px;
+    position: relative;
 }
 
-.select-wrapper {
+.custom-select-wrapper {
     position: relative;
     width: 100%;
 }
 
-.select-wrapper select {
+.custom-select-trigger {
     width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
     background: rgba(8, 12, 28, 0.55);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-md);
     padding: 0.7rem 2.25rem 0.7rem 1rem;
     font-size: 0.88rem;
@@ -747,12 +783,18 @@ body::after {
     font-family: var(--font-sans);
     cursor: pointer;
     transition: all var(--transition-fast);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
 }
 
-.select-wrapper select:focus {
+.custom-select-trigger:focus,
+.custom-select-trigger.active {
     outline: none;
     border-color: var(--border-color-focus);
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    background: rgba(8, 12, 28, 0.75);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .select-arrow {
@@ -763,9 +805,85 @@ body::after {
     color: var(--text-secondary);
     pointer-events: none;
     display: flex;
+    transition: transform var(--transition-normal);
+}
+
+.select-arrow.open {
+    transform: translateY(-50%) rotate(180deg);
 }
 
 .select-arrow svg {
+    width: 14px;
+    height: 14px;
+}
+
+.custom-select-options {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: rgba(10, 15, 35, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg), 0 10px 30px rgba(0, 0, 0, 0.4);
+    z-index: 50;
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    overflow: hidden;
+    animation: dropdownEntrance 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: top center;
+}
+
+@keyframes dropdownEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.custom-select-option {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.865rem;
+    color: var(--text-secondary);
+    border-radius: calc(var(--radius-md) - 4px);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all var(--transition-fast);
+}
+
+.custom-select-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.custom-select-option:focus-visible {
+    outline: 2px solid var(--primary-light);
+    outline-offset: -2px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.custom-select-option.selected {
+    background: var(--primary-gradient-subtle, rgba(99, 102, 241, 0.12));
+    color: var(--primary-light);
+    font-weight: 500;
+}
+
+.custom-select-option.selected .option-check {
+    display: flex;
+    color: var(--primary-light);
+}
+
+.option-check svg {
     width: 14px;
     height: 14px;
 }
