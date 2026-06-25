@@ -1,19 +1,21 @@
 # TaskFlow — Premium React Productivity Dashboard
 
-TaskFlow is a high-fidelity, visually stunning Todo application built with **React.js** and **Vite**, featuring a glassmorphic dark-theme visual style, real-time analytics, and keyboard accessibility.
+TaskFlow is a high-fidelity, visually stunning Todo application built with **React.js** and **Vite**, featuring a glassmorphic dark-theme visual style, real-time interactive analytics, customized accessible inputs, and keyboard accessibility.
 
 ---
 
 ## ✨ Features
 
-### 📊 1. Live Analytics Dashboard
+### 📊 1. Live Interactive Analytics Dashboard
 *   **Total & Status Counters**: Tracks total, completed, and pending tasks in real time.
-*   **Animated SVG Progress Wheel**: Visualizes task completion percentage with a glowing radial gradient ring.
+*   **Interactive Filters**: Click on **Total Tasks**, **Pending**, or **Completed** cards directly to filter the task list view, supported by custom active state visual glows and keyboard access.
+*   **Animated SVG Progress Wheel**: Visualizes task completion percentage with a glowing radial gradient ring featuring rounded line caps.
 *   **Header Calendar Widget**: Displays the current formatted calendar date dynamically.
 
-### ⚙️ 2. Dynamic Control Toolbar
+### ⚙️ 2. Premium Custom Toolbar
+*   **Bespoke Dropdown Select**: Replaced the native browser dropdown with a custom, animated select menu. Styled with a glassmorphic background, a rotating chevron indicator, hover state styling, checkmark icons for selected options, and click-outside closing detection.
 *   **Real-time Search**: Narrows down lists instantly as you type and highlights matching keyword terms.
-*   **Segmented Filters**: Quick toggles to switch views (All, Pending, Completed) with a sliding transition indicator.
+*   **Segmented Filters**: Quick tab buttons to switch views (All, Pending, Completed) synced with the analytics cards, complete with a sliding transition indicator.
 *   **Sorting Options**: Arrange tasks instantly by Newest First, Oldest First, Alphabetical (A-Z), and Alphabetical (Z-A).
 *   **Bulk Commands**: Enables/disables a button to clear all completed items simultaneously.
 
@@ -26,6 +28,10 @@ TaskFlow is a high-fidelity, visually stunning Todo application built with **Rea
 ### 🔔 4. Toasts & Error Validation
 *   **Transient Toast System**: Displays auto-dismissing notifications for success, warnings, or edits.
 *   **Form Validation**: Blocks duplicates and whitespace-only entries, showing custom error alert banners.
+
+### 📱 5. Responsive & Resilient Layout
+*   **Tablet Layout Fixes**: Configured columns to wrap to a 2x2 grid below `768px` to ensure cards remain readable and clear.
+*   **Overflow Protection**: Added min-width and flex constraints to text details to allow text wrapping inside cards without overlap.
 
 ---
 
@@ -51,7 +57,7 @@ TaskFlow is a high-fidelity, visually stunning Todo application built with **Rea
 │   │   ├── TodoForm.jsx      # Task creation form & validation
 │   │   ├── TodoItem.jsx      # Todo card with inline edit inputs
 │   │   ├── TodoList.jsx      # Iterates task list & empty layouts
-│   │   └── TodoToolbar.jsx   # Search, sort, filters slider
+│   │   └── TodoToolbar.jsx   # Search, sort dropdown, filters slider
 │   ├── App.jsx           # Main coordinator (global state & storage)
 │   ├── index.css         # Theme tokens, layout, and animations
 │   └── main.jsx          # Bootstrap mounting script
